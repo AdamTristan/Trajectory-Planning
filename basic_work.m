@@ -37,11 +37,11 @@ hold on
 
 %%
 % 三维多段轨迹插值
-wp = [0, 0, 0; 3, 4, 1; 1, 2, 5] ;
-P1 = mstraj(wp, [], [2 1], [], 0.04, 0) ; % 轨迹位置 最大速度 时间 初始位置 插值间隔 加速时间
+wp = [300, 400, 300; 0, 0, 400; -100, 300, 500] ;
+P1 = mstraj(wp, [], [2 2], [], 0.05, 0) ; % 轨迹位置 最大速度 时间 初始位置 插值间隔 加速时间
 plot(P1);
 hold on ;
-P2 = mstraj(wp, [], [2 1], [], 0.04, 0.5) ;
+P2 = mstraj(wp, [], [2 2], [], 0.05, 0.5) ;
 plot(P2);
 legend('p1', 'p2')
 
@@ -378,10 +378,10 @@ rpy3 = tr2rpy(T3)/pi*180 ;
 % 此处转动复杂，原因是函数超过了范围，范围属于【-pi， pi】之间
 
 wp = [300, 400, 300; 0, 0, 400; -100, 300, 500] ;
-a = 2 ;
-b = 2 ;
-t = 0.04 ;
-ac = 0.05 ;
+a = 5 ;
+b = 5 ;
+t = 0.01 ;
+ac = 1 ;
 P_traj = mstraj(wp, [], [a b], [], t, ac) ;  % 位置线性插值
 T_traj_transl = transl(P_traj) ;
 
@@ -406,22 +406,19 @@ q = zeros(n, 6) ;
 dq = zeros(n, 6) ; 
 ddq = zeros(n, 6) ; 
 
+
+for i = 1:n-1
+    dq(i, :) = (Qtraj(i+1, :) - Qtraj(i, :))/t ;
+end
+
 for i = 1:n-2
-    q1 = six_link.ikunc(T_traj(:, :, i)) ;
-    q2 = six_link.ikunc(T_traj(:, :, i+1)) ;
-    q3 = six_link.ikunc(T_traj(:, :, i+2)) ;
-    dq(i, :) = (q3-q2)/t-(q2-q1)/t ; 
-    ddq(i, :) = ((q3-q2)/t-(q2-q1)/t)/t/180*pi ;
+    ddq(i, :) = (dq(i+1, :) - dq(i, :))/t ;
 end
 
-for i = 1:n
-    q(i, :) = six_link.ikunc(T_traj(:, :, i)) ;
-end
-
-t1 = linspace(0, 4, 100) ;
+t1 = linspace(0, a + b, n) ;
 
 subplot(1, 3, 1) ;
-plot(t1, q) ;
+plot(t1, Qtraj) ;
 grid on
 xlabel('time') ;
 xlabel('q') ;
