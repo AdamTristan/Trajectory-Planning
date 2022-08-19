@@ -107,7 +107,7 @@ for i = 1:n
     end
 end
 
-six_link.plot(Qtraj) ;
+six_link.plot(Qtraj);
 
 %%
 % 实际案例
