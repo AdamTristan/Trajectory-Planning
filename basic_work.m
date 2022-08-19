@@ -466,7 +466,7 @@ legend('joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6') ;
 %     end
 % end
 % 
-% six_link.plot(Qtraj) ;
+six_link.plot(Qtraj) ;
 
 
 
